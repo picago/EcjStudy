@@ -1,0 +1,50 @@
+def SpringVersion = '4.0.1.RELEASE'
+def JettyVersion = '8.1.14.v20131031'
+
+apply plugin: 'idea'
+idea.project.languageLevel = '1.7'
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+
+    version = "git rev-parse --short HEAD".execute().text.trim()
+
+    [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+	
+	repositories {
+		maven { url "http://maven.oschina.net/content/groups/public/" }
+	    //mavenCentral()
+        //maven { url "http://192.168.0.150:8081/nexus/content/groups/public/" }
+	}
+
+	configurations {
+		all*.exclude group: 'commons-logging', module: 'commons-logging'
+	}
+	
+    processResources << {
+        file("$destinationDir/version.properties").text = 'version=' + project.version
+    }
+
+	task copyLib(type: Sync, dependsOn: jar) {
+		from configurations.compile
+		from jar.archivePath
+		into 'build/deploy'
+	}
+	
+	task copyWebapp(type: Sync) {
+		from 'src/main/webapp'
+		into 'build/deploy/webapp'
+	}
+}
+project(':mvc-study') {
+	dependencies{
+        compile fileTree( dir: "lib", include: '*.jar' )
+		compile "org.eclipse.jetty:jetty-jsp:${JettyVersion}"
+        testCompile 'junit:junit:4.11'
+	}
+	task deploy(dependsOn: [copyLib, copyWebapp])
+}
+
+
