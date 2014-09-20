@@ -14,7 +14,7 @@ public class SpyClassLoader extends ClassLoader {
 
 
     @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
+    public Class<?> findClass(String name) throws ClassNotFoundException {
         File file = new File(CompilerHelper.getTargetFile(), "Spy.class");
         byte[] byteCode = new byte[0];
         try {

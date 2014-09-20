@@ -26,7 +26,8 @@ public class EcjCompiler {
 
         String sourceDir = CompilerHelper.getTargetFile().getAbsolutePath();
         String className = "Spy";
-        FileUtils.writeStringToFile(new File(sourceDir, className + ".java"), code, "UTF-8");
+        File file = new File(sourceDir, className + ".java");
+        FileUtils.writeStringToFile(file, code, "UTF-8");
         /**
          * The JDT compiler
          */
@@ -35,8 +36,8 @@ public class EcjCompiler {
                 problemFactory);
 
         // Go !
-        jdtCompiler.compile(new ICompilationUnit[]{new CompilationUnitImpl(new File(sourceDir, className + ".java"))});
-
+        jdtCompiler.compile(new ICompilationUnit[]{new CompilationUnitImpl(file)});
+        file.delete();
         return new SpyClassLoader().loadClass(className);
 //        return Thread.currentThread().getContextClassLoader().loadClass(className);
 
