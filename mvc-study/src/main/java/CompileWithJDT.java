@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class CompileWithJDT {
 
-    private static final File CURRENT = new File("X:\\WORKSPACE\\dive_in_play\\EclipseJDT\\data");
+    private static final File CURRENT = new File("C:\\app\\lab\\study\\EcjStudy\\mvc-study\\src\\main\\resources");
     private static final File SOURCES_DIR = new File(CURRENT, "sources");
     private static final File BYTECODES_DIR = new File(CURRENT, "bytecodes");
 
@@ -148,7 +148,7 @@ public class CompileWithJDT {
     }
 
     public static CompilerOptions getCompilerOptions() {
-        Map<String  , String> settings = new HashMap();
+        Map<String, String> settings = new HashMap();
         settings.put(CompilerOptions.OPTION_ReportMissingSerialVersion, CompilerOptions.IGNORE);
         settings.put(CompilerOptions.OPTION_LineNumberAttribute, CompilerOptions.GENERATE);
         settings.put(CompilerOptions.OPTION_SourceFileAttribute, CompilerOptions.GENERATE);
