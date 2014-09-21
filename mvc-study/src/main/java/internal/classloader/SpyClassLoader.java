@@ -7,15 +7,14 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * 热替换方式加载class文件
  * Created by Alex on 2014/9/20
  */
 public class SpyClassLoader extends ClassLoader {
 
-
-
     @Override
     public Class<?> findClass(String name) throws ClassNotFoundException {
-        File file = new File(CompilerHelper.getTargetFile(), "Spy.class");
+        File file = new File(CompilerHelper.getTargetFile(), name+".class");
         byte[] byteCode = new byte[0];
         try {
             byteCode = FileUtils.readFileToByteArray(file);

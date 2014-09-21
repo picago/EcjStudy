@@ -4,13 +4,17 @@ import org.springframework.stereotype.Component;
 import tk.verybd.DemoBean;
 
 @Component
-public class Spy {
+public class Spy2 {
 
     @Autowired
     private DemoBean bean;
 
     public void spy() throws Exception {
-        System.out.println("Hello Kugou!============+++");
+        System.out.println("Hello Kugou!============");
         System.out.println(FieldUtils.readDeclaredField(bean, "map", true));
+    }
+
+    public void test01(String arg) {
+        System.out.println("arg:" + arg);
     }
 }

@@ -44,6 +44,10 @@ project(':mvc-study') {
 		compile "org.eclipse.jetty:jetty-jsp:${JettyVersion}"
         compile 'org.apache.commons:commons-lang3:3.1'
         compile 'commons-io:commons-io:2.4'
+        compile 'commons-logging:commons-logging:1.1.2'
+        compile 'org.apache.commons:com.springsource.org.apache.commons.logging:1.1.1'
+        compile "org.springframework:spring-context:${SpringVersion}"
+        compile 'org.javassist:javassist:3.18.0-GA'
         testCompile 'junit:junit:4.11'
 	}
 	task deploy(dependsOn: [copyLib, copyWebapp])

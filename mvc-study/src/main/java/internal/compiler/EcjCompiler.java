@@ -39,9 +39,10 @@ public class EcjCompiler {
         jdtCompiler.compile(new ICompilationUnit[]{new CompilationUnitImpl(file)});
         file.delete();
         return new SpyClassLoader().loadClass(className);
-//        return Thread.currentThread().getContextClassLoader().loadClass(className);
 
     }
+
+
 
     public static class CompilerRequestorImpl implements ICompilerRequestor {
         public void acceptResult(CompilationResult result) {
