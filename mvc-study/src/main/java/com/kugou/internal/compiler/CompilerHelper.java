@@ -1,4 +1,4 @@
-package internal.compiler;
+package com.kugou.internal.compiler;
 
 import org.apache.commons.io.FileUtils;
 

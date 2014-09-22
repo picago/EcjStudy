@@ -1,4 +1,4 @@
-package internal.compiler;
+package com.kugou.internal.compiler;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -31,7 +31,7 @@ public class NameEnvironmentImpl implements INameEnvironment {
      * @param name like `aaa`,`aaa.BBB`,`java.lang`,`java.lang.String`
      */
     private NameEnvironmentAnswer findType(final String name) {
-        System.out.println("### to find the type: " + name);
+//        System.out.println("### to find the type: " + name);
         // check data dir first
         File file = new File(SOURCES_DIR, name.replace('.', '/') + ".java");
         if (file.isFile()) {
@@ -55,7 +55,7 @@ public class NameEnvironmentImpl implements INameEnvironment {
             throw new RuntimeException(e);
         }
 
-        System.out.println("### type not found: " + name);
+//        System.out.println("### type not found: " + name);
         return null;
     }
 

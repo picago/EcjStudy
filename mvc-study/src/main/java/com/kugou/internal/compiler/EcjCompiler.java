@@ -1,6 +1,9 @@
-package internal.compiler;
+package com.kugou.internal.compiler;
 
-import internal.classloader.SpyClassLoader;
+import com.kugou.internal.classloader.SpyClassLoader;
+import javassist.*;
+import javassist.expr.ExprEditor;
+import javassist.expr.MethodCall;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.*;
@@ -20,9 +23,18 @@ import java.util.Map;
  */
 public class EcjCompiler {
 
-    public static Class compileOne(String code) throws ClassNotFoundException, IOException {
+    private static Compiler jdtCompiler;
+
+    static {
         IProblemFactory problemFactory = new DefaultProblemFactory(Locale.ENGLISH);
         IErrorHandlingPolicy policy = DefaultErrorHandlingPolicies.exitOnFirstError();
+        jdtCompiler = new Compiler( new NameEnvironmentImpl(),
+                policy, getCompilerOptions(),
+                new CompilerRequestorImpl(),
+                problemFactory);
+    }
+
+    public static Class compileOne(String code) throws Exception {
 
         String sourceDir = CompilerHelper.getTargetFile().getAbsolutePath();
         String className = "Spy";
@@ -31,18 +43,37 @@ public class EcjCompiler {
         /**
          * The JDT compiler
          */
-        org.eclipse.jdt.internal.compiler.Compiler jdtCompiler = new Compiler(
-                new NameEnvironmentImpl(), policy, getCompilerOptions(), new CompilerRequestorImpl(),
-                problemFactory);
 
         // Go !
         jdtCompiler.compile(new ICompilationUnit[]{new CompilationUnitImpl(file)});
         file.delete();
-        return new SpyClassLoader().loadClass(className);
+        Class klass = modifyClass();
+        return klass;
 
     }
 
+    private static Class modifyClass() throws NotFoundException, CannotCompileException, IOException, ClassNotFoundException {
+        ClassPool pool = ClassPool.getDefault();
+        pool.insertClassPath(CompilerHelper.getTargetFile().getAbsolutePath());
+        CtClass cc = pool.get("Spy");
+        CtClass.debugDump = "C:\\";
+        cc.addField(CtField.make("final StringBuilder sb = new StringBuilder(\"<<\");", cc));
+        CtMethod method = cc.getDeclaredMethod("spy");
+        method.instrument(new ExprEditor() {
 
+            @Override
+            public void edit(MethodCall m) throws CannotCompileException {
+                if (m.getClassName().endsWith("PrintStream")
+                        && m.getMethodName().equals("println")) {
+                    m.replace("if($0==System.out) sb.append($1+\"<br/>\"); else  $proceed($$);");
+                }
+            }
+        });
+        byte[] byteCode = cc.toBytecode();
+        Class klass = new SpyClassLoader(byteCode).loadClass(cc.getName());
+        cc.detach();
+        return klass;
+    }
 
     public static class CompilerRequestorImpl implements ICompilerRequestor {
         public void acceptResult(CompilationResult result) {

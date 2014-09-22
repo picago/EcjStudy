@@ -13,4 +13,8 @@ public class Spy {
         System.out.println("Hello Kugou!============+++");
         System.out.println(FieldUtils.readDeclaredField(bean, "map", true));
     }
+
+    public void test01(String arg) {
+        System.out.println("arg:" + arg);
+    }
 }
